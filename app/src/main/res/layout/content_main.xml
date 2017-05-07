@@ -8,20 +8,12 @@
     tools:context="sugialmantara.iak.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv_forecast">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/textView"
-        android:layout_below="@+id/textView"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="26dp"
-        app:srcCompat="@android:drawable/ic_lock_lock" />
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

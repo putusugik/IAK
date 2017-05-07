@@ -4,12 +4,26 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import sugialmantara.iak.Adapter.AdapterForecast;
+import sugialmantara.iak.Model.DummyForecast;
+
 public class MainActivity extends AppCompatActivity {
+
+    private AdapterForecast adapter;
+    private List<DummyForecast> list = new ArrayList<>();
+    @BindView(R.id.rv_forecast)RecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+
+        setupRV();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -48,5 +65,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupRV(){
+        adapter = new AdapterForecast(list);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(adapter);
+
+        popuData();
+    }
+
+    private void  popuData(){
+        for (int i  = 0; i < 10; i++){
+            DummyForecast dummy = new DummyForecast("Sunday", "Rainy", 20, 23, 123);
+            list.add(dummy);
+        }
+        adapter.notifyDataSetChanged();
     }
 }
