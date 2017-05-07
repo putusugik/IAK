@@ -7,9 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.android.volley.Request;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +90,32 @@ public class MainActivity extends AppCompatActivity {
             list.add(dummy);
         }
         adapter.notifyDataSetChanged();
+        getDataWeather();
+    }
+
+    public void getDataWeather(){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        final String url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=-8.689513&lon=115.237762&cnt=16&appid=2141b349862ae4b0177ad8c1c3a6d5ab&units=metric";
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Sukses", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error!=null){
+                            Log.d("Resp: ",error.toString());
+                        } else {
+                            Log.d("NULL: ", error.toString());
+                        }
+                    }
+                }
+        );
+        requestQueue.add(stringRequest);
     }
 }
