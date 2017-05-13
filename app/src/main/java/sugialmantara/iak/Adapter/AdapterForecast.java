@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sugialmantara.iak.Model.DummyForecast;
+import sugialmantara.iak.Model.WeatherItem;
 import sugialmantara.iak.R;
 
 /**
@@ -16,9 +17,11 @@ import sugialmantara.iak.R;
 
 public class AdapterForecast extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<DummyForecast> listDummy = new ArrayList<>();
+    private List<WeatherItem> listDummy = new ArrayList<>();
 
-    public AdapterForecast(List<DummyForecast> listDummy) {
+
+
+    public AdapterForecast(List<WeatherItem> listDummy) {
         this.listDummy = listDummy;
     }
 
@@ -37,5 +40,12 @@ public class AdapterForecast extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return listDummy.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+
+
     }
 }

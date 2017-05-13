@@ -8,7 +8,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sugialmantara.iak.Model.DummyForecast;
+import sugialmantara.iak.Model.WeatherItem;
 import sugialmantara.iak.R;
+import sugialmantara.iak.Utils.SunshineIconUtils;
 
 /**
  * Created by Sugik on 5/7/2017.
@@ -27,11 +29,15 @@ public class ForecastItemVH extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(DummyForecast data){
-        tHari.setText(data.getDay());
-        tCuaca.setText(data.getWeather());
-        tMaxSuhu.setText(String.valueOf(data.getMaxTem())+"\u00b0");
-        tMinSuhu.setText(String.valueOf(data.getMinTem())+"\u00b0");
+    public void bind(WeatherItem data){
+        img.setImageResource(SunshineIconUtils.
+                getSmallArtResourceIdForWeatherCondition(data.getWeather().get(0).getId()));
+        tHari.setText(data.getReadTime());
+        tCuaca.setText(data.getWeather().get(0).getMain());
+        tMaxSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMax()));
+        tMinSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMin()));
+        /*tMaxSuhu.setText(String.valueOf(data.getMaxTem())+"\u00b0");
+        tMinSuhu.setText(String.valueOf(data.getMinTem())+"\u00b0");*/
     }
 
 }

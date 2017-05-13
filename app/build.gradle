@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "sugialmantara.iak"
@@ -31,4 +31,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.google.code.gson:gson:2.8.0'
 }
