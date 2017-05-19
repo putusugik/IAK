@@ -13,6 +13,32 @@ public class WeatherItem {
     private long dt;
     private Temp temp;
     private List<Weather> weather;
+    private int humidity;
+    private double pressure, speed;
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
+    public double getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(double pressure) {
+        this.pressure = pressure;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
     @Override
     public String toString() {
@@ -47,9 +73,33 @@ public class WeatherItem {
         this.weather = weather;
     }
 
-    public String getReadTime(){
-        Date date = new Date(dt*1000L);
-        DateFormat format = new SimpleDateFormat("EEEE");
-        return format.format(date);
+    public String getReadTime(int position){
+        if (position == 0){
+            return "Tomorrow";
+        } else {
+            Date date = new Date(dt*1000L);
+            DateFormat format = new SimpleDateFormat("EEEE");
+            return format.format(date);
+        }
     }
+
+    public String getTodayReadTime(){
+        Date date = new Date(dt*1000L);
+        DateFormat format = new SimpleDateFormat("MMM dd");
+        return "Today, "+format.format(date);
+    }
+
+    public String getReadHumidity(){
+        return humidity + " %";
+    }
+
+    public String getReadPressure(){
+        return Math.round(pressure) + " hPa";
+    }
+
+    public String getReadSpeed(){
+        return Math.round(speed) + " m/sec";
+    }
+
+
 }

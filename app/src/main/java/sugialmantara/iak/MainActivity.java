@@ -1,8 +1,10 @@
 package sugialmantara.iak;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,15 +30,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sugialmantara.iak.Adapter.AdapterForecast;
+import sugialmantara.iak.Adapter.OnClickListener;
+import sugialmantara.iak.Database.ForecastDBHelper;
 import sugialmantara.iak.Model.DailyForecast;
 import sugialmantara.iak.Model.DummyForecast;
 import sugialmantara.iak.Model.WeatherItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private AdapterForecast adapter;
     private Gson gson = new Gson();
     private List<WeatherItem> list = new ArrayList<>();
+    private ForecastDBHelper dbHelper;
+    private static final String cityTarget = "Madrid";
+    private DailyForecast dailyForecast;
+
     @BindView(R.id.rv_forecast)RecyclerView rv;
 
     @Override
@@ -45,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setElevation(0);
         ButterKnife.bind(this);
+
+        dbHelper = new ForecastDBHelper(this);
 
         setupRV();
 
@@ -86,21 +97,12 @@ public class MainActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
         getDataWeather();
-      //  popuData();
     }
-
-    /*private void  popuData(){
-        for (int i  = 0; i < 10; i++){
-            DummyForecast dummy = new DummyForecast("Sunday", "Rainy", 20, 23, 123);
-            list.add(dummy);
-        }
-        adapter.notifyDataSetChanged();
-        getDataWeather();
-    }*/
 
     public void getDataWeather(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        final String url = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=-3.703579&lon=40.417681&cnt=16&appid=2141b349862ae4b0177ad8c1c3a6d5ab&units=metric";
+        final String url = "http://api.openweathermap.org/data/2.5/forecast/daily?cnt=" +
+                "16&appid=2141b349862ae4b0177ad8c1c3a6d5ab&units=metric&q="+cityTarget;
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET, url,
@@ -115,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
                                 list.add(item);
                             }
                             adapter.notifyDataSetChanged();
+                            adapter.setClickListener(MainActivity.this);
+                            saveForecastDB(dailyForecast);
+
                         }  catch (Exception e){
                             Log.e("Daily: ", e.getMessage());
                         }
@@ -123,14 +128,48 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error!=null){
-                            Log.d("Resp: ",error.toString());
+                        if (dbHelper.isDataAlreadyExist(cityTarget)){
+                            dailyForecast = dbHelper.getSavedForecast(cityTarget);
+                            showDataFromDB(dailyForecast);
                         } else {
-                            Log.d("NULL: ", error.toString());
+                            if (error != null){
+                                Log.e("Error: ", error.getMessage());
+                            } else {
+                                Log.d("NULL: ", error.toString());
+                            }
+
                         }
                     }
                 }
         );
         requestQueue.add(stringRequest);
+    }
+
+    private void showDataFromDB(DailyForecast dailyForecast) {
+        list.clear();
+        for (WeatherItem item : dailyForecast.getList()){
+            list.add(item);
+        }
+        adapter.notifyDataSetChanged();
+        adapter.setClickListener(this);
+    }
+
+    private void saveForecastDB(DailyForecast data) {
+        if (dbHelper.isDataAlreadyExist(cityTarget)){
+            dbHelper.deleteForUpdate(cityTarget);
+        }
+
+        for (WeatherItem item : data.getList()){
+            dbHelper.saveForecast(data.getCity(), item);
+        }
+    }
+
+    @Override
+    public void onItemClick (WeatherItem data, int pos) {
+        Intent det = new Intent(MainActivity.this, DetailActivity.class);
+        det.putExtra("data", gson.toJson(data));
+        det.putExtra("position", pos);
+        startActivity(det);
+
     }
 }

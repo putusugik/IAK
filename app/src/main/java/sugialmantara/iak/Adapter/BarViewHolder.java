@@ -29,13 +29,21 @@ public class BarViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind (WeatherItem data){
+    public void bind(final WeatherItem data, final OnClickListener clickListener){
         img.setImageResource(SunshineIconUtils.
                 getSmallArtResourceIdForWeatherCondition(data.getWeather().get(0).getId()));
         mxSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMax()));
         mnSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMin()));
         deskrip.setText(data.getWeather().get(0).getDescription());
-        tday.setText(data.getReadTime());
+        tday.setText(data.getTodayReadTime());
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onItemClick(data, 0);
+            }
+        });
     }
+
 
 }

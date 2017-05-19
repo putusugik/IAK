@@ -29,15 +29,24 @@ public class ForecastItemVH extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void bind(WeatherItem data){
+    public void bind(final WeatherItem data, int position ,final OnClickListener clickListener){
         img.setImageResource(SunshineIconUtils.
                 getSmallArtResourceIdForWeatherCondition(data.getWeather().get(0).getId()));
-        tHari.setText(data.getReadTime());
+        tHari.setText(data.getReadTime(position));
         tCuaca.setText(data.getWeather().get(0).getMain());
         tMaxSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMax()));
         tMinSuhu.setText(data.getTemp().getResolveTemp(data.getTemp().getMin()));
         /*tMaxSuhu.setText(String.valueOf(data.getMaxTem())+"\u00b0");
         tMinSuhu.setText(String.valueOf(data.getMinTem())+"\u00b0");*/
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onItemClick(data, 0);
+            }
+        });
     }
+
+
 
 }
